@@ -1,0 +1,45 @@
+name: Rust
+
+on:
+  push:
+    branches: ["master", "unstable"]
+  pull_request:
+    branches: ["master", "unstable"]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install nightly toolchain
+        run: rustup default nightly
+
+      - name: Add rustfmt
+        run: rustup component add rustfmt --toolchain nightly
+
+      - name: Format check
+        run: cargo fmt -- --check
+
+      - name: Add clippy
+        run: rustup component add clippy --toolchain nightly
+
+      - name: Clippy check
+        run: cargo clippy -- -D warnings
+
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install nightly toolchain
+        run: rustup default nightly
+
+      - name: Build
+        run: cargo build --verbose
+
+      - name: Run tests
+        run: cargo test --verbose

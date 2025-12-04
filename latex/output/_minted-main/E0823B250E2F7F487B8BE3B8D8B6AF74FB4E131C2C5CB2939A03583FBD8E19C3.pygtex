@@ -1,0 +1,19 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kd}{let}\PYG{+w}{ }\PYG{k}{mut}\PYG{+w}{ }\PYG{n}{dist}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{HashMap}::\PYG{n}{with\PYGZus{}capacity}\PYG{p}{(}\PYG{n}{g}\PYG{p}{.}\PYG{n}{order}\PYG{p}{());}
+\PYG{k+kd}{let}\PYG{+w}{ }\PYG{k}{mut}\PYG{+w}{ }\PYG{n}{pred}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{HashMap}::\PYG{n}{with\PYGZus{}capacity}\PYG{p}{(}\PYG{n}{g}\PYG{p}{.}\PYG{n}{order}\PYG{p}{());}
+\PYG{k}{for}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{n}{g}\PYG{p}{.}\PYG{n}{nodes}\PYG{p}{()}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{k}{mut}\PYG{+w}{ }\PYG{n}{neighbors\PYGZus{}dist}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{HashMap}::\PYG{n}{new}\PYG{p}{();}
+\PYG{+w}{    }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{k}{mut}\PYG{+w}{ }\PYG{n}{neighors\PYGZus{}pred}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{HashMap}::\PYG{n}{new}\PYG{p}{();}
+
+\PYG{+w}{    }\PYG{n}{neighbors\PYGZus{}dist}\PYG{p}{.}\PYG{n}{insert}\PYG{p}{(}\PYG{n}{n}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{W}::\PYG{n}{zero}\PYG{p}{());}
+\PYG{+w}{    }\PYG{n}{neighors\PYGZus{}pred}\PYG{p}{.}\PYG{n}{insert}\PYG{p}{(}\PYG{n}{n}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{n}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{k}{for}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{neighbor}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{weight}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{n}{g}\PYG{p}{.}\PYG{n}{weighted\PYGZus{}neighbors}\PYG{p}{(}\PYG{n}{n}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{neighbors\PYGZus{}dist}\PYG{p}{.}\PYG{n}{insert}\PYG{p}{(}\PYG{n}{neighbor}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{weight}\PYG{p}{);}
+\PYG{+w}{        }\PYG{n}{neighors\PYGZus{}pred}\PYG{p}{.}\PYG{n}{insert}\PYG{p}{(}\PYG{n}{neighbor}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{n}\PYG{p}{);}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{n}{dist}\PYG{p}{.}\PYG{n}{insert}\PYG{p}{(}\PYG{n}{n}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{neighbors\PYGZus{}dist}\PYG{p}{);}
+\PYG{+w}{    }\PYG{n}{pred}\PYG{p}{.}\PYG{n}{insert}\PYG{p}{(}\PYG{n}{n}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{neighors\PYGZus{}pred}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

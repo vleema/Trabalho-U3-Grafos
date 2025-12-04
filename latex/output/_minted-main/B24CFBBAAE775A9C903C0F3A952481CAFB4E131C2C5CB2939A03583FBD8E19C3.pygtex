@@ -1,0 +1,64 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{impl}\PYG{o}{\PYGZlt{}}\PYG{n}{N}: \PYG{n+nc}{Node}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{W}: \PYG{n+nc}{Weight}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n}{DijkstraResult}\PYG{o}{\PYGZlt{}}\PYG{n}{N}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{W}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{pub}\PYG{+w}{ }\PYG{k}{fn} \PYG{n+nf}{new}\PYG{p}{(}\PYG{n}{graph}: \PYG{k+kp}{\PYGZam{}}\PYG{p}{(}\PYG{k}{impl}\PYG{+w}{ }\PYG{n}{WeightedGraph}\PYG{o}{\PYGZlt{}}\PYG{n}{N}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{W}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{o}{?}\PYG{n+nb}{Sized}\PYG{p}{),}\PYG{+w}{ }\PYG{n}{start}: \PYG{n+nc}{N}\PYG{p}{)}\PYG{+w}{ }\PYGZhy{}\PYGZgt{} \PYG{n+nc}{Self}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{k}{mut}\PYG{+w}{ }\PYG{n}{route}: \PYG{n+nc}{HashMap}\PYG{o}{\PYGZlt{}}\PYG{n}{N}\PYG{p}{,}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{W}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nb}{Option}\PYG{o}{\PYGZlt{}}\PYG{n}{N}\PYG{o}{\PYGZgt{}}\PYG{p}{)}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{HashMap}::\PYG{n}{new}\PYG{p}{();}
+\PYG{+w}{        }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{k}{mut}\PYG{+w}{ }\PYG{n}{visited}: \PYG{n+nc}{HashSet}\PYG{o}{\PYGZlt{}}\PYG{n}{N}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{HashSet}::\PYG{n}{new}\PYG{p}{();}
+\PYG{+w}{        }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{k}{mut}\PYG{+w}{ }\PYG{n}{distance}: \PYG{n+nc}{HashMap}\PYG{o}{\PYGZlt{}}\PYG{n}{N}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{W}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{HashMap}::\PYG{n}{new}\PYG{p}{();}
+\PYG{+w}{        }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{k}{mut}\PYG{+w}{ }\PYG{n}{pred}: \PYG{n+nc}{HashMap}\PYG{o}{\PYGZlt{}}\PYG{n}{N}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nb}{Option}\PYG{o}{\PYGZlt{}}\PYG{n}{N}\PYG{o}{\PYGZgt{}\PYGZgt{}}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{HashMap}::\PYG{n}{new}\PYG{p}{();}
+\PYG{+w}{        }\PYG{n}{distance}\PYG{p}{.}\PYG{n}{insert}\PYG{p}{(}\PYG{n}{start}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{W}::\PYG{n}{zero}\PYG{p}{());}
+\PYG{+w}{        }\PYG{n}{pred}\PYG{p}{.}\PYG{n}{insert}\PYG{p}{(}\PYG{n}{start}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nb}{None}\PYG{p}{);}
+
+\PYG{+w}{        }\PYG{k}{for}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{neighbor}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{weight}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{n}{graph}\PYG{p}{.}\PYG{n}{weighted\PYGZus{}neighbors}\PYG{p}{(}\PYG{n}{start}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{n}{pred}\PYG{p}{.}\PYG{n}{insert}\PYG{p}{(}\PYG{n}{neighbor}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nb}{Some}\PYG{p}{(}\PYG{n}{start}\PYG{p}{));}
+\PYG{+w}{            }\PYG{n}{distance}\PYG{p}{.}\PYG{n}{insert}\PYG{p}{(}\PYG{n}{neighbor}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{weight}\PYG{p}{);}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{        }\PYG{k}{loop}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{k}{mut}\PYG{+w}{ }\PYG{n}{unvisited\PYGZus{}node}: \PYG{n+nb}{Option}\PYG{o}{\PYGZlt{}}\PYG{p}{(}\PYG{n}{N}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{W}\PYG{p}{)}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nb}{None}\PYG{p}{;}
+\PYG{+w}{            }\PYG{k}{for}\PYG{+w}{ }\PYG{n}{node}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{n}{graph}\PYG{p}{.}\PYG{n}{nodes}\PYG{p}{()}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                }\PYG{k}{if}\PYG{+w}{ }\PYG{o}{!}\PYG{n}{visited}\PYG{p}{.}\PYG{n}{contains}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{node}\PYG{p}{)}
+\PYG{+w}{                    }\PYG{o}{\PYGZam{}\PYGZam{}}\PYG{+w}{ }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{n+nb}{Some}\PYG{p}{(}\PYG{n}{distance}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{distance}\PYG{p}{.}\PYG{n}{get}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{node}\PYG{p}{)}
+\PYG{+w}{                    }\PYG{o}{\PYGZam{}\PYGZam{}}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{unvisited\PYGZus{}node}\PYG{p}{.}\PYG{n}{is\PYGZus{}none}\PYG{p}{()}
+\PYG{+w}{                        }\PYG{o}{||}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{unvisited\PYGZus{}node}\PYG{p}{.}\PYG{n}{is\PYGZus{}some}\PYG{p}{()}\PYG{+w}{ }\PYG{o}{\PYGZam{}\PYGZam{}}\PYG{+w}{ }\PYG{n}{distance}\PYG{+w}{ }\PYG{o}{\PYGZlt{}}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{unvisited\PYGZus{}node}\PYG{p}{.}\PYG{n}{unwrap}\PYG{p}{().}\PYG{l+m+mi}{1}\PYG{p}{))}
+\PYG{+w}{                }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                    }\PYG{n}{unvisited\PYGZus{}node}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nb}{Some}\PYG{p}{((}\PYG{n}{node}\PYG{p}{,}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{distance}\PYG{p}{));}
+\PYG{+w}{                }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{            }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{            }\PYG{k}{match}\PYG{+w}{ }\PYG{n}{unvisited\PYGZus{}node}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                }\PYG{n+nb}{None}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{k}{break}\PYG{p}{,}
+\PYG{+w}{                }\PYG{n+nb}{Some}\PYG{p}{((}\PYG{n}{node}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{node\PYGZus{}weight}\PYG{p}{))}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                    }\PYG{n}{visited}\PYG{p}{.}\PYG{n}{insert}\PYG{p}{(}\PYG{n}{node}\PYG{p}{);}
+
+\PYG{+w}{                    }\PYG{k}{for}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{neighbor}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{weight}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{n}{graph}\PYG{p}{.}\PYG{n}{weighted\PYGZus{}neighbors}\PYG{p}{(}\PYG{n}{node}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                        }\PYG{k}{if}\PYG{+w}{ }\PYG{o}{!}\PYG{n}{visited}\PYG{p}{.}\PYG{n}{contains}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{neighbor}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                            }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{n}{new\PYGZus{}distance}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{weight}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{n}{node\PYGZus{}weight}\PYG{p}{;}
+
+\PYG{+w}{                            }\PYG{k}{match}\PYG{+w}{ }\PYG{n}{distance}\PYG{p}{.}\PYG{n}{get}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{neighbor}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                                }\PYG{n+nb}{Some}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{neighbor\PYGZus{}distance}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                                    }\PYG{k}{if}\PYG{+w}{ }\PYG{n}{neighbor\PYGZus{}distance}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n}{new\PYGZus{}distance}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                                        }\PYG{n}{distance}\PYG{p}{.}\PYG{n}{insert}\PYG{p}{(}\PYG{n}{neighbor}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{new\PYGZus{}distance}\PYG{p}{);}
+\PYG{+w}{                                        }\PYG{n}{pred}\PYG{p}{.}\PYG{n}{insert}\PYG{p}{(}\PYG{n}{neighbor}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nb}{Some}\PYG{p}{(}\PYG{n}{node}\PYG{p}{));}
+\PYG{+w}{                                    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{                                }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{                                }\PYG{n+nb}{None}\PYG{+w}{ }\PYG{o}{=\PYGZgt{}}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                                    }\PYG{n}{distance}\PYG{p}{.}\PYG{n}{insert}\PYG{p}{(}\PYG{n}{neighbor}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{new\PYGZus{}distance}\PYG{p}{);}
+\PYG{+w}{                                    }\PYG{n}{pred}\PYG{p}{.}\PYG{n}{insert}\PYG{p}{(}\PYG{n}{neighbor}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nb}{Some}\PYG{p}{(}\PYG{n}{node}\PYG{p}{));}
+\PYG{+w}{                                }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{                            }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{                        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{                    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{                    }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{k}{mut}\PYG{+w}{ }\PYG{n}{parent}: \PYG{n+nb}{Option}\PYG{o}{\PYGZlt{}}\PYG{n}{N}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nb}{None}\PYG{p}{;}
+\PYG{+w}{                    }\PYG{k}{if}\PYG{+w}{ }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{n+nb}{Some}\PYG{p}{(}\PYG{n}{opt}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{pred}\PYG{p}{.}\PYG{n}{get}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{node}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                        }\PYG{n}{parent}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{opt}\PYG{p}{;}
+\PYG{+w}{                    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{                    }\PYG{n}{route}\PYG{p}{.}\PYG{n}{insert}\PYG{p}{(}\PYG{n}{node}\PYG{p}{,}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{node\PYGZus{}weight}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{parent}\PYG{p}{));}
+\PYG{+w}{                }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{            }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{        }\PYG{n+nb+bp}{Self}\PYG{+w}{ }\PYG{p}{\PYGZob{}}\PYG{+w}{ }\PYG{n}{route}\PYG{+w}{ }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

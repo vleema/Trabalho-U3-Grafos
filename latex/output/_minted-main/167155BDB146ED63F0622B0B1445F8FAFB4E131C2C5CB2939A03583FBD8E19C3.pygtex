@@ -1,0 +1,6 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{struct} \PYG{n+nc}{FloydWarshallResult}\PYG{o}{\PYGZlt{}}\PYG{n}{Node}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{Weight}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{dist}: \PYG{n+nc}{HashMap}\PYG{o}{\PYGZlt{}}\PYG{n}{Node}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{HashMap}\PYG{o}{\PYGZlt{}}\PYG{n}{Node}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{Weight}\PYG{o}{\PYGZgt{}\PYGZgt{}}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{pred}: \PYG{n+nc}{HashMap}\PYG{o}{\PYGZlt{}}\PYG{n}{Node}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{HashMap}\PYG{o}{\PYGZlt{}}\PYG{n}{Node}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{Node}\PYG{o}{\PYGZgt{}\PYGZgt{}}\PYG{p}{,}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

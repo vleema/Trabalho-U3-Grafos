@@ -1,0 +1,5 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{impl}\PYG{o}{\PYGZlt{}}\PYG{n}{N}: \PYG{n+nc}{Node}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{W}: \PYG{n+nc}{Weight}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n}{FloydWarshallResult}\PYG{o}{\PYGZlt{}}\PYG{n}{N}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{W}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{fn} \PYG{n+nf}{new}\PYG{p}{(}\PYG{n}{g}: \PYG{k+kp}{\PYGZam{}}\PYG{p}{(}\PYG{k}{impl}\PYG{+w}{ }\PYG{n}{WeightedGraph}\PYG{o}{\PYGZlt{}}\PYG{n}{N}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{W}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{o}{?}\PYG{n+nb}{Sized}\PYG{p}{))}\PYG{+w}{ }\PYGZhy{}\PYGZgt{} \PYG{n+nc}{Self}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

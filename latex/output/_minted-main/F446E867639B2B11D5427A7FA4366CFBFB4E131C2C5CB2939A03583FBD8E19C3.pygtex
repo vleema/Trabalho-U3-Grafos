@@ -1,0 +1,29 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{pub}\PYG{+w}{ }\PYG{k}{fn} \PYG{n+nf}{new}\PYG{p}{(}\PYG{n}{graph}: \PYG{k+kp}{\PYGZam{}}\PYG{o}{\PYGZsq{}}\PYG{n+na}{a} \PYG{n+nc}{G}\PYG{p}{)}\PYG{+w}{ }\PYGZhy{}\PYGZgt{} \PYG{n+nc}{Self}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{n}{nodes}: \PYG{n+nb}{Vec}\PYG{o}{\PYGZlt{}}\PYG{n}{T}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{graph}\PYG{p}{.}\PYG{n}{nodes}\PYG{p}{().}\PYG{n}{collect}\PYG{p}{();}
+\PYG{+w}{    }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{n}{accepted\PYGZus{}adj}: \PYG{n+nc}{HashMap}\PYG{o}{\PYGZlt{}}\PYG{n}{T}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{HashSet}\PYG{o}{\PYGZlt{}}\PYG{n}{T}\PYG{o}{\PYGZgt{}\PYGZgt{}}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{HashMap}::\PYG{n}{with\PYGZus{}capacity}\PYG{p}{(}\PYG{n}{nodes}\PYG{p}{.}\PYG{n}{len}\PYG{p}{());}
+
+\PYG{+w}{    }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{k}{mut}\PYG{+w}{ }\PYG{n}{seen}: \PYG{n+nc}{HashSet}\PYG{o}{\PYGZlt{}}\PYG{p}{(}\PYG{n}{T}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{T}\PYG{p}{)}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{HashSet}::\PYG{n}{with\PYGZus{}capacity}\PYG{p}{(}\PYG{n}{nodes}\PYG{p}{.}\PYG{n}{len}\PYG{p}{()}\PYG{+w}{ }\PYG{o}{*}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{p}{);}
+\PYG{+w}{    }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{k}{mut}\PYG{+w}{ }\PYG{n}{edges}: \PYG{n+nb}{Vec}\PYG{o}{\PYGZlt{}}\PYG{p}{(}\PYG{n}{T}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{T}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{i32}\PYG{p}{)}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nb}{Vec}::\PYG{n}{new}\PYG{p}{();}
+
+\PYG{+w}{    }\PYG{k}{for}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{u}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{nodes}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{for}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{v}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{w}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{n}{graph}\PYG{p}{.}\PYG{n}{weighted\PYGZus{}neighbors}\PYG{p}{(}\PYG{n}{u}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{a}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{b}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{if}\PYG{+w}{ }\PYG{n}{u}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{v}\PYG{+w}{ }\PYG{p}{\PYGZob{}}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{u}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{v}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{k}{else}\PYG{+w}{ }\PYG{p}{\PYGZob{}}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{v}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{u}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZcb{};}
+\PYG{+w}{            }\PYG{k}{if}\PYG{+w}{ }\PYG{n}{seen}\PYG{p}{.}\PYG{n}{insert}\PYG{p}{((}\PYG{n}{a}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{b}\PYG{p}{))}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                }\PYG{n}{edges}\PYG{p}{.}\PYG{n}{push}\PYG{p}{((}\PYG{n}{a}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{b}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{w}\PYG{p}{));}
+\PYG{+w}{            }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{n}{edges}\PYG{p}{.}\PYG{n}{sort\PYGZus{}by}\PYG{p}{(}\PYG{o}{|}\PYG{p}{(}\PYG{n}{ua}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{va}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{wa}\PYG{p}{),}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{ub}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{vb}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{wb}\PYG{p}{)}\PYG{o}{|}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{wa}\PYG{p}{.}\PYG{n}{cmp}\PYG{p}{(}\PYG{n}{wb}\PYG{p}{).}\PYG{n}{then\PYGZus{}with}\PYG{p}{(}\PYG{o}{||}\PYG{+w}{ }\PYG{n}{ua}\PYG{p}{.}\PYG{n}{cmp}\PYG{p}{(}\PYG{n}{ub}\PYG{p}{)).}\PYG{n}{then\PYGZus{}with}\PYG{p}{(}\PYG{o}{||}\PYG{+w}{ }\PYG{n}{va}\PYG{p}{.}\PYG{n}{cmp}\PYG{p}{(}\PYG{n}{vb}\PYG{p}{))}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{});}
+
+\PYG{+w}{    }\PYG{n}{KruskalIter}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{\PYGZus{}graph}: \PYG{n+nc}{graph}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{edges}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{idx}: \PYG{l+m+mi}{0}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{accepted\PYGZus{}adj}\PYG{p}{,}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}
