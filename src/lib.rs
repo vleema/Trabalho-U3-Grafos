@@ -10,9 +10,10 @@
 
 #![feature(impl_trait_in_assoc_type)]
 
-mod adjacency_list;
+mod adjacency_matrix;
 mod graph;
 mod traversal;
+mod heuristics;
 
 pub use graph::Graph;
 pub use graph::Node;
@@ -20,7 +21,7 @@ pub use graph::UndirectedGraph;
 pub use graph::WeightedGraph;
 
 pub mod graphs {
-    pub use crate::adjacency_list::AdjacencyList;
+    pub use crate::adjacency_matrix::AdjacencyMatrix;
     pub use crate::traversal::BfsEvent;
     pub use crate::traversal::BfsIter;
     pub use crate::traversal::BiconnectedComponentsIter;

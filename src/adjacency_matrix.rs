@@ -2,23 +2,27 @@ use crate::graph::{Node, Weight, WeightedGraph};
 use crate::{Graph, UndirectedGraph};
 use std::collections::HashMap;
 
-/// Representa um grafo usando uma lista de adjacência.
-/// A lista é implementada como um dicionário, onde cada chave
+/// Representa um grafo usando uma matriz de adjacência.
+/// A matriz é implementada como um dicionário, onde cada chave
 /// guarda um nó e o valor é um conjunto de arestas.
 /// Cada elemento do conjunto de arestas é uma dupla:
 /// - 1º elemento indica o vértice adjacente;
 /// - 2º elemento indica o peso da aresta.
 ///
-#[derive(Debug, Clone, Default)]
-pub struct AdjacencyList<N: Node, W: Weight>(pub HashMap<N, Vec<(N, W)>>);
+///
 
-impl<N: Node, W: Weight> AdjacencyList<N, W> {
+// FIXME: só renomeei o tipo para AdjacencyMatrix, tem que avaliar se vamos manter
+// uma struct pra isso ou se vamos só de funções puras
+#[derive(Debug, Clone, Default)]
+pub struct AdjacencyMatrix<N: Node, W: Weight>(pub HashMap<N, Vec<(N, W)>>);
+
+impl<N: Node, W: Weight> AdjacencyMatrix<N, W> {
     pub fn new() -> Self {
-        AdjacencyList(HashMap::new())
+        AdjacencyMatrix(HashMap::new())
     }
 }
 
-impl<N: Node, W: Weight> Graph<N> for AdjacencyList<N, W> {
+impl<N: Node, W: Weight> Graph<N> for AdjacencyMatrix<N, W> {
     fn order(&self) -> usize {
         self.0.len()
     }
@@ -79,9 +83,9 @@ impl<N: Node, W: Weight> Graph<N> for AdjacencyList<N, W> {
     }
 }
 
-impl<N: Node, W: Weight> UndirectedGraph<N> for AdjacencyList<N, W> {}
+impl<N: Node, W: Weight> UndirectedGraph<N> for AdjacencyMatrix<N, W> {}
 
-impl<N: Node, W: Weight> WeightedGraph<N, W> for AdjacencyList<N, W> {
+impl<N: Node, W: Weight> WeightedGraph<N, W> for AdjacencyMatrix<N, W> {
     fn add_weighted_edge(&mut self, n: N, m: N, w: W) {
         if self.0.contains_key(&m) {
             self.0
