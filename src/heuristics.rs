@@ -71,6 +71,84 @@ pub fn nearest_neighbour(graph: Vec<Vec<usize>>, start: usize) -> (Vec<usize>, u
     (path, cost)
 }
 
+pub fn nearest_insertion(graph: Vec<Vec<usize>>, start: usize) -> Vec<usize> {
+    let n = graph.len();
+    let mut in_cycle: Vec<bool> = vec![false; n];
+    in_cycle[start] = true;
+
+    let mut nearest_to_start = None;
+    let mut nearest_dist = usize::MAX;
+
+    for node in 0..n {
+        if node == start {
+            continue;
+        }
+        if graph[start][node] < nearest_dist {
+            nearest_dist = graph[start][node];
+            nearest_to_start = Some(node);
+        }
+    }
+
+    let first_insert = nearest_to_start.unwrap();
+    in_cycle[first_insert] = true;
+
+    let mut cycle: Vec<usize> = vec![start, first_insert, start];
+    let mut remaining_nodes: Vec<usize> = Vec::new();
+    
+    for node in 0..n {
+        if !in_cycle[node] {
+            remaining_nodes.push(node);
+        }
+    }
+
+    while !remaining_nodes.is_empty() {
+        let mut best_candidate = None;
+        let mut best_candidate_dist = usize::MAX;
+
+        for &candidate in &remaining_nodes {
+            let mut dist_to_cycle = usize::MAX;
+            for node in 0..n {
+                if in_cycle[node] && graph[candidate][node] < dist_to_cycle {
+                    dist_to_cycle = graph[candidate][node];
+                }
+            }
+
+            if dist_to_cycle < best_candidate_dist {
+                best_candidate_dist = dist_to_cycle;
+                best_candidate = Some(candidate);
+            }
+        }
+
+        let r_star = best_candidate.unwrap();
+        let mut best_extra_cost = usize::MAX;
+        let mut best_insert_index = 0;
+
+        for i in 0..cycle.len() - 1 {
+            let u = cycle[i];
+            let v = cycle[i + 1];
+            let extra_cost = graph[u][r_star] + graph[r_star][v] - graph[u][v];
+
+            if extra_cost < best_extra_cost {
+                best_extra_cost = extra_cost;
+                best_insert_index = i;
+            }
+        }
+
+        cycle.insert(best_insert_index + 1, r_star);
+        in_cycle[r_star] = true;
+        let mut updated_remaining = Vec::new();
+
+        for &node in &remaining_nodes {
+            if node != r_star {
+                updated_remaining.push(node);
+            }
+        }
+        remaining_nodes = updated_remaining;
+    }
+
+    cycle
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
