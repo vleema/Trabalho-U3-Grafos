@@ -1,52 +1,88 @@
+use std::collections::HashSet;
+
 enum SearchType {
     BestImp,
     FirstImp,
 }
 
 trait LocalSearch {
-    fn swap(&self, graph: &Vec<Vec<usize>>, imp: SearchType) -> Self;
+    fn swap(&self, graph: &Vec<Vec<usize>>, start: usize, imp: SearchType) -> Self;
     fn two_opt(&self, graph: &Vec<Vec<usize>>, imp: SearchType) -> Self;
 }
 
-#[derive(Clone)]
-struct Solution {
-    route: Vec<usize>,
-    cost: usize,
+#[derive(PartialEq, Eq, Clone, Hash)]
+pub struct Solution {
+    pub route: Vec<usize>,
+    pub cost: usize,
 }
 
 impl Solution {
-    fn neighbourhood_by_swap(&self, graph: &Vec<Vec<usize>>) -> Vec<Self> {
-        todo!()
+    fn neighbourhood_by_swap(&self, graph: &Vec<Vec<usize>>, start: usize) -> HashSet<Self> {
+        // TODO: melhorar a legibilidade desse troço
+        let get_cost_for_solution = |route: &Vec<usize>, graph: &Vec<Vec<usize>>| -> usize {
+            let mut cost = 0;
+            for (idx_u, el) in route.iter().enumerate() {
+                let next_el = route[idx_u + 1];
+                cost += graph[*el][next_el];
+
+                if idx_u + 1 == route.len() - 1 {
+                    cost += graph[next_el][route[0]];
+                    break;
+                }
+            }
+            cost
+        };
+
+        let mut solutions: HashSet<Solution> = HashSet::new();
+
+        for v in &self.route {
+            let mut new_route = self.route.clone();
+
+            let tmp = new_route[start];
+            new_route[start] = new_route[*v];
+            new_route[*v] = tmp;
+
+            let cost = get_cost_for_solution(&new_route, &graph);
+
+            solutions.insert(Self {
+                route: new_route,
+                cost,
+            });
+        }
+
+        solutions
     }
 }
 
 impl LocalSearch for Solution {
-    fn swap(&self, graph: &Vec<Vec<usize>>, imp: SearchType) -> Self {
-        let (route, cost) = (self.route.clone(), self.cost);
-
-        let mut best_solution: &Solution = &Self { route, cost };
+    // TODO: realmente precisamos do best e first improvement...?
+    fn swap(&self, graph: &Vec<Vec<usize>>, start: usize, imp: SearchType) -> Self {
+        let mut best_solution: Solution = self.clone();
         let mut found_better_solution = true;
-        let solutions = self.neighbourhood_by_swap(&graph);
 
         while found_better_solution {
             found_better_solution = false;
+
+            // nada eficiente, mas é o comportamento comum..
+
+            let solutions = best_solution.neighbourhood_by_swap(&graph, start);
 
             match imp {
                 SearchType::FirstImp => {
                     for s in solutions.iter() {
                         if s.cost < best_solution.cost {
                             found_better_solution = true;
-                            best_solution = s;
+                            best_solution = s.clone();
                             break;
                         }
                     }
                 }
                 SearchType::BestImp => {
-                    let mut tmp_solution = best_solution;
+                    let mut tmp_solution = best_solution.clone();
 
                     for s in solutions.iter() {
                         if s.cost < tmp_solution.cost {
-                            tmp_solution = s;
+                            tmp_solution = s.clone();
                         }
                     }
 
@@ -57,10 +93,111 @@ impl LocalSearch for Solution {
                 }
             }
         }
-        best_solution.clone()
+        best_solution
     }
 
     fn two_opt(&self, graph: &Vec<Vec<usize>>, imp: SearchType) -> Self {
         self.clone()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::graphs::MAX;
+
+    #[test]
+    fn graph_1_first_imp_test_1() {
+        let graph = vec![
+            vec![MAX, 1, 2, 4, 3],
+            vec![1, MAX, 7, 2, 5],
+            vec![2, 7, MAX, 8, 1],
+            vec![4, 2, 8, MAX, 6],
+            vec![3, 5, 1, 6, MAX],
+        ];
+
+        let mut solution = Solution {
+            route: vec![0, 1, 2, 3, 4],
+            cost: 25,
+        };
+
+        solution = solution.swap(&graph, 0, SearchType::FirstImp);
+        assert_eq!(solution.cost, 12);
+    }
+
+    #[test]
+    fn graph_1_first_imp_test_2() {
+        let graph = vec![
+            vec![MAX, 1, 2, 4, 3],
+            vec![1, MAX, 7, 2, 5],
+            vec![2, 7, MAX, 8, 1],
+            vec![4, 2, 8, MAX, 6],
+            vec![3, 5, 1, 6, MAX],
+        ];
+
+        let mut solution = Solution {
+            route: vec![0, 1, 3, 4, 2],
+            cost: 12,
+        };
+
+        solution = solution.swap(&graph, 0, SearchType::FirstImp);
+        assert_eq!(solution.cost, 12);
+    }
+
+    #[test]
+    fn graph_1_first_imp_test_3() {
+        let graph = vec![
+            vec![MAX, 1, 2, 4, 3],
+            vec![1, MAX, 7, 2, 5],
+            vec![2, 7, MAX, 8, 1],
+            vec![4, 2, 8, MAX, 6],
+            vec![3, 5, 1, 6, MAX],
+        ];
+
+        let mut solution = Solution {
+            route: vec![0, 1, 2, 3, 4],
+            cost: 25,
+        };
+
+        solution = solution.swap(&graph, 2, SearchType::FirstImp);
+        assert_eq!(solution.cost, 12);
+    }
+
+    #[test]
+    fn graph_1_best_imp_test_1() {
+        let graph = vec![
+            vec![MAX, 1, 2, 4, 3],
+            vec![1, MAX, 7, 2, 5],
+            vec![2, 7, MAX, 8, 1],
+            vec![4, 2, 8, MAX, 6],
+            vec![3, 5, 1, 6, MAX],
+        ];
+
+        let mut solution = Solution {
+            route: vec![0, 1, 3, 4, 2],
+            cost: 12,
+        };
+
+        solution = solution.swap(&graph, 0, SearchType::BestImp);
+        assert_eq!(solution.cost, 12);
+    }
+
+    #[test]
+    fn graph_1_best_imp_test_2() {
+        let graph = vec![
+            vec![MAX, 1, 2, 4, 3],
+            vec![1, MAX, 7, 2, 5],
+            vec![2, 7, MAX, 8, 1],
+            vec![4, 2, 8, MAX, 6],
+            vec![3, 5, 1, 6, MAX],
+        ];
+
+        let mut solution = Solution {
+            route: vec![0, 1, 2, 3, 4],
+            cost: 25,
+        };
+
+        solution = solution.swap(&graph, 2, SearchType::BestImp);
+        assert_eq!(solution.cost, 12);
     }
 }

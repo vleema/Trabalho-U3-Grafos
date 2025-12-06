@@ -1,4 +1,4 @@
-use graphs_algorithms::graphs::{MAX, nearest_neighbour};
+use graphs_algorithms::graphs::{nearest_neighbour, MAX};
 
 fn main() {
     let mut graph = vec![
@@ -9,9 +9,9 @@ fn main() {
         vec![3, 5, 1, 6, MAX],
     ];
 
-    let (path, cost) = nearest_neighbour(graph, 0);
+    let solution = nearest_neighbour(&graph, 0);
 
-    assert_eq!(cost, 12);
-    assert_eq!(path[0], 0);
-    assert_eq!(path.last(), Some(2).as_ref());
+    assert_eq!(solution.cost, 12);
+    assert_eq!(solution.route[0], 0);
+    assert_eq!(solution.route.last(), Some(2).as_ref());
 }
