@@ -5,7 +5,7 @@ use std::array;
 use csv_macro::graph_from_csv;
 use rand::{rngs::ThreadRng, seq::SliceRandom};
 
-graph_from_csv!("problem.csv");
+graph_from_csv!("data/grasp-km.csv");
 
 /// A metric for representing the quality of a solution to the TSP problem.
 type Fit = f64;
