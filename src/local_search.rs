@@ -18,21 +18,6 @@ pub struct Solution {
 
 impl Solution {
     fn neighbourhood_by_swap(&self, graph: &Vec<Vec<usize>>, start: usize) -> HashSet<Self> {
-        // TODO: melhorar a legibilidade desse troço
-        let get_cost_for_solution = |route: &Vec<usize>, graph: &Vec<Vec<usize>>| -> usize {
-            let mut cost = 0;
-            for (idx_u, el) in route.iter().enumerate() {
-                let next_el = route[idx_u + 1];
-                cost += graph[*el][next_el];
-
-                if idx_u + 1 == route.len() - 1 {
-                    cost += graph[next_el][route[0]];
-                    break;
-                }
-            }
-            cost
-        };
-
         let mut solutions: HashSet<Solution> = HashSet::new();
 
         for v in &self.route {
@@ -42,7 +27,11 @@ impl Solution {
             new_route[start] = new_route[*v];
             new_route[*v] = tmp;
 
-            let cost = get_cost_for_solution(&new_route, &graph);
+            let cost = new_route
+                .windows(2)
+                .map(|w| graph[w[0]][w[1]])
+                .sum::<usize>()
+                + graph[new_route[new_route.len() - 1]][new_route[0]];
 
             solutions.insert(Self {
                 route: new_route,
