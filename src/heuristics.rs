@@ -170,14 +170,11 @@ pub fn nearest_insertion(graph: &Graph, start: usize) -> Solution {
             }
         }
     }
-    
+
     cycle.pop();
     let cost = Solution::calculate_cost(&cycle, graph);
-    
-    Solution { 
-        route: cycle, 
-        cost 
-    }
+
+    Solution { route: cycle, cost }
 }
 
 #[cfg(test)]
@@ -238,7 +235,7 @@ mod tests {
         if route.len() != n {
             return false;
         }
-        
+
         let mut visited = vec![false; n];
         for &v in route.iter() {
             if v >= n || visited[v] {

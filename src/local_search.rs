@@ -21,10 +21,8 @@ impl Solution {
         if route.is_empty() {
             return 0.0;
         }
-        
-        route.windows(2)
-            .map(|w| graph[w[0]][w[1]])
-            .sum::<f64>()
+
+        route.windows(2).map(|w| graph[w[0]][w[1]]).sum::<f64>()
             + graph[route[route.len() - 1]][route[0]]
     }
 
