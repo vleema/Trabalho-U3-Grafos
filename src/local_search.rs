@@ -17,6 +17,17 @@ pub struct Solution {
 
 #[allow(dead_code)]
 impl Solution {
+    pub fn calculate_cost(route: &[usize], graph: &Graph) -> f64 {
+        if route.is_empty() {
+            return 0.0;
+        }
+        
+        route.windows(2)
+            .map(|w| graph[w[0]][w[1]])
+            .sum::<f64>()
+            + graph[route[route.len() - 1]][route[0]]
+    }
+
     fn neighbourhood_by_swap(&self, graph: &Graph, start: usize) -> Vec<Self> {
         let mut solutions: Vec<Solution> = Vec::new();
 
@@ -28,8 +39,7 @@ impl Solution {
             // new_route[start] = new_route[*v];
             // new_route[*v] = tmp;
 
-            let cost = new_route.windows(2).map(|w| graph[w[0]][w[1]]).sum::<f64>()
-                + graph[new_route[new_route.len() - 1]][new_route[0]];
+            let cost = Self::calculate_cost(&new_route, graph);
 
             solutions.push(Self {
                 route: new_route,
@@ -56,8 +66,7 @@ impl Solution {
             let elem = new_route.remove(start);
             new_route.insert(target_pos, elem);
 
-            let cost = new_route.windows(2).map(|w| graph[w[0]][w[1]]).sum::<f64>()
-                + graph[new_route[new_route.len() - 1]][new_route[0]];
+            let cost = Self::calculate_cost(&new_route, graph);
 
             solutions.push(Self {
                 route: new_route,
@@ -91,8 +100,7 @@ impl Solution {
                     if insert_pos <= new_route.len() {
                         new_route.splice(insert_pos..insert_pos, sequence);
 
-                        let cost = new_route.windows(2).map(|w| graph[w[0]][w[1]]).sum::<f64>()
-                            + graph[*new_route.last().unwrap()][new_route[0]];
+                        let cost = Self::calculate_cost(&new_route, graph);
 
                         neighbours.push(Solution {
                             route: new_route,

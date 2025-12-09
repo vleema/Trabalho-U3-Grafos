@@ -100,7 +100,7 @@ pub fn nearest_neighbour(graph: &Graph, start: usize) -> Solution {
 ///    ainda não inseridos.
 /// 8. O processo continua até que todos os vértices estejam presentes no ciclo.
 #[allow(dead_code)]
-pub fn nearest_insertion(graph: &Graph, start: usize) -> Vec<usize> {
+pub fn nearest_insertion(graph: &Graph, start: usize) -> Solution {
     let n = graph.len();
     let mut in_cycle = vec![false; n];
     let mut min_dist = vec![f64::INFINITY; n];
@@ -149,7 +149,6 @@ pub fn nearest_insertion(graph: &Graph, start: usize) -> Vec<usize> {
             let dv = graph[r_star][v];
             let uv = graph[u][v];
 
-            // let extra = du.saturating_add(dv).saturating_sub(uv);
             let extra = du + dv - uv;
 
             if extra < best_extra {
@@ -171,7 +170,14 @@ pub fn nearest_insertion(graph: &Graph, start: usize) -> Vec<usize> {
             }
         }
     }
-    cycle
+    
+    cycle.pop();
+    let cost = Solution::calculate_cost(&cycle, graph);
+    
+    Solution { 
+        route: cycle, 
+        cost 
+    }
 }
 
 #[cfg(test)]
@@ -228,23 +234,13 @@ mod tests {
         assert_eq!(solution.route.last(), Some(3).as_ref());
     }
 
-    fn calc_cost(graph: &Graph, path: &Vec<usize>) -> f64 {
-        let mut cost = 0.0;
-        for i in 0..path.len() - 1 {
-            cost += graph[path[i]][path[i + 1]];
-        }
-        cost
-    }
-
-    fn is_valid_cycle(path: &Vec<usize>, n: usize) -> bool {
-        if path.len() != n + 1 {
+    fn is_valid_cycle(route: &[usize], n: usize) -> bool {
+        if route.len() != n {
             return false;
         }
-        if path.first() != path.last() {
-            return false;
-        }
+        
         let mut visited = vec![false; n];
-        for &v in path.iter().take(path.len() - 1) {
+        for &v in route.iter() {
             if v >= n || visited[v] {
                 return false;
             }
@@ -263,11 +259,10 @@ mod tests {
             vec![20.0, 25.0, 30.0, INF],
         ];
 
-        let path = nearest_insertion(&graph, 0);
-        let cost = calc_cost(&graph, &path);
+        let solution = nearest_insertion(&graph, 0);
 
-        assert!(is_valid_cycle(&path, graph.len()));
-        assert!(cost > 0.0);
+        assert!(is_valid_cycle(&solution.route, graph.len()));
+        assert!(solution.cost > 0.0);
     }
 
     #[test]
@@ -280,11 +275,10 @@ mod tests {
             vec![7.0, 3.0, 5.0, 6.0, INF],
         ];
 
-        let path = nearest_insertion(&graph, 0);
-        let cost = calc_cost(&graph, &path);
+        let solution = nearest_insertion(&graph, 0);
 
-        assert!(is_valid_cycle(&path, graph.len()));
-        assert!(cost > 0.0);
+        assert!(is_valid_cycle(&solution.route, graph.len()));
+        assert!(solution.cost > 0.0);
     }
 
     #[test]
@@ -297,10 +291,9 @@ mod tests {
             vec![1.0, 100.0, 50.0, 1.0, INF],
         ];
 
-        let path = nearest_insertion(&graph, 0);
-        let cost = calc_cost(&graph, &path);
+        let solution = nearest_insertion(&graph, 0);
 
-        assert!(is_valid_cycle(&path, graph.len()));
-        assert!(cost > 0.0);
+        assert!(is_valid_cycle(&solution.route, graph.len()));
+        assert!(solution.cost > 0.0);
     }
 }
