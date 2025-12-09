@@ -1,5 +1,5 @@
 use crate::graphs::Graph;
-use crate::local_search::Solution;
+use crate::local_search::{LocalSearch, Solution};
 
 /// Implementação da heurística do Vizinho Mais Próximo (Nearest Neighbor), um algoritmo
 /// guloso que gera um caminho para o Problema do Caixeiro Viajante.
@@ -172,6 +172,13 @@ pub fn nearest_insertion(graph: &Graph, start: usize) -> Vec<usize> {
         }
     }
     cycle
+}
+
+#[allow(dead_code)]
+pub fn nearest_neighbour_with_swap(graph: &Graph, start: usize) -> Solution {
+    let first_solution = nearest_neighbour(graph, start);
+    let best_solution = first_solution.swap(graph, start);
+    best_solution
 }
 
 #[cfg(test)]
