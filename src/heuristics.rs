@@ -1,4 +1,6 @@
 /// Implementação da Heurística do Vizinho Mais Próximo, um algoritmo guloso que gera um caminho
+use crate::local_search::Solution;
+
 /// para o Problema do Caixeiro Viaijante.
 ///
 /// # Argumentos
@@ -22,7 +24,7 @@
 /// 6. Retorna o caminho encontrado e o custo total dele.
 /// - Este algoritmo não insere ao fim do caminho o vértice inicial, pois é assumido que existe um
 ///     ciclo hamiltoniano ao fim deste caminho, logo, não é uma informação relevante.
-pub fn nearest_neighbour(graph: Vec<Vec<usize>>, start: usize) -> (Vec<usize>, usize) {
+pub fn nearest_neighbour(graph: &Vec<Vec<usize>>, start: usize) -> Solution {
     // Sem muitas abstrações em razão de uma suposta eficiência!!
 
     let mut visited: Vec<bool> = vec![false; graph.len()];
@@ -64,9 +66,7 @@ pub fn nearest_neighbour(graph: Vec<Vec<usize>>, start: usize) -> (Vec<usize>, u
 
     cost += graph[current_node][start];
 
-    // Adicionar ou não novamente o vértice inicial? Matheus comentou que não era interessante...
-
-    (path, cost)
+    Solution { route: path, cost }
 }
 
 #[cfg(test)]
@@ -83,11 +83,11 @@ mod tests {
             vec![3, 5, 1, 6, usize::MAX],
         ];
 
-        let (path, cost) = nearest_neighbour(graph, 0);
+        let solution = nearest_neighbour(&graph, 0);
 
-        assert_eq!(cost, 12);
-        assert_eq!(path[0], 0);
-        assert_eq!(path.last(), Some(2).as_ref());
+        assert_eq!(solution.cost, 12);
+        assert_eq!(solution.route[0], 0);
+        assert_eq!(solution.route.last(), Some(2).as_ref());
     }
 
     #[test]
@@ -99,11 +99,11 @@ mod tests {
             vec![6, 3, 1, usize::MAX],
         ];
 
-        let (path, cost) = nearest_neighbour(graph, 0);
+        let solution = nearest_neighbour(&graph, 0);
 
-        assert_eq!(cost, 10);
-        assert_eq!(path[0], 0);
-        assert_eq!(path.last(), Some(3).as_ref());
+        assert_eq!(solution.cost, 10);
+        assert_eq!(solution.route[0], 0);
+        assert_eq!(solution.route.last(), Some(3).as_ref());
     }
 
     #[test]
@@ -115,10 +115,10 @@ mod tests {
             vec![1000, 3, 1, usize::MAX],
         ];
 
-        let (path, cost) = nearest_neighbour(graph, 0);
+        let solution = nearest_neighbour(&graph, 0);
 
-        assert_eq!(cost, 1004);
-        assert_eq!(path[0], 0);
-        assert_eq!(path.last(), Some(3).as_ref());
+        assert_eq!(solution.cost, 1004);
+        assert_eq!(solution.route[0], 0);
+        assert_eq!(solution.route.last(), Some(3).as_ref());
     }
 }
