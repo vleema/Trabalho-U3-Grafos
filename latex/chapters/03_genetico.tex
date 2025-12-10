@@ -1,3 +1,124 @@
 \chapter{Algoritmo Genético}
 \label{ch:genetics}
 
+Quanto ao algoritmo genético, como uma implementação
+tradicional já entendida, vamos apenas nos ater as principais
+decisões que tomamos quanto a implementação do nosso algoritmo para o
+problema. Tais decisões são dividas em 5 pontos principais:
+
+\begin{itemize}
+  \item Como foi gerada a população inicial.
+  \item Como indivíduos foram selecionados para cruzamento.
+  \item Qual a foi a operação de crossover utilizada.
+  \item Como escolhemos os hiper-parâmetros.
+\end{itemize}
+
+Antes começar a abordar esses pontos é interessante ressaltar que uma
+das principais diferenças na nossa abordagem foi monomorfizar os
+dados do grafo através de uma procedural macro (proc-macro) que
+carrega os dados da instância em tempo de compilação:
+
+\begin{minted}{rust}
+use csv_macro::graph_from_csv;
+
+graph_from_csv!("data/006/data.csv");
+\end{minted}
+
+Isso permite que o compilador faça otimizações mais agressivas pois o
+grafo do problema é agora conhecido durante a compilação e não em
+execução. Outra vantagem das proc-macros é a capacidade de
+implementar o algoritmo sem realizar nenhuma alocação de memória na
+heap, ou seja, usando apenas a stack, o que também é mais eficiente.
+
+\section{Discussão sobre as decisões}
+
+Enfim começando a falar sobre o algoritmo, comecemos pela estratégia
+utilizada para a geração da população inicial. Para tal a ideia
+foi gerar sequências aleatórias de $0$ até $n$ e popular a coleção de
+indivíduos com isso, ($n$ é o número de nós do grafo). Nós fizemos
+isso primeiro definindo um intervalo e criando um arranjo a partir
+dele, depois, para cada indivíduo na população, embaralhamos esse
+arranjo e associamos ele a um indivíduo.
+
+\begin{minted}{rust}
+// Inicializa um intervalo [0..NODE_COUNT).
+let mut rit = 0..NODE_COUNT;
+// Cada elemento do intervalo é associado a um arranjo.
+let mut r: [usize; NODE_COUNT] = array::from_fn(|_| unsafe { rit.next().unwrap_unchecked() });
+// Para cada indivíduo da população (não estarão inicializados).
+for i in p {
+    // O arranjo é embaralhado com um gerador de números aleatório.
+    r.shuffle(rng);
+    // O indivíduo é associado ao arranjo embaralhado.
+    *i = r;
+}
+\end{minted}
+
+Para o cruzamento, apenas dividimos a população em duas metades
+"iguais" e realizamos o crossover pointwise de cada elemento das duas
+metades, após isso re-embaralhamos a população para sempre permitir
+que indivíduos diferentes tenham a oportunidade de sofrer crossover.
+É importante ressaltar que o crossover não tem a garantia de ser bem
+sucedido no nosso algoritmo, não no sentido de adicionar um indivíduo
+com fitness pior na nossa população, mas no de não aceitar a prole
+se ela não tiver o fitness melhor que pelo menos um dos pais.
+Entraremos em mais detalhes sobre isso brevemente, mas essa é
+implementação da seleção.
+
+\begin{minted}{rust}
+// Separa a população em duas metades.
+let (h1, h2) = p.split_at_mut(p.len() / 2);
+// Realiza o crossover pointwise em indivíduos das duas metades.
+for (p1, p2) in h1.iter_mut().zip(h2) {
+    if let Some(i) = cross(p1, p2)
+        && rand::random_bool(mrate)
+    {
+        // Realiza uma mutação somente se o crossover foi bem sucedido e a prole foi sorteada.
+        mutate([p1, p2][i]);
+    }
+}
+// Re-embaralha a população.
+p.shuffle(rng);
+\end{minted}
+
+Quanto ao crossover, usamos o Sequential Constructive Crossover
+(SCX)~\cite{ahmed2010genetic}, que é considerado o melhor operador de
+crossover por alguns autores na literatura~\cite{khan2015assessing}.
+A principal vantagem desse operador é que ele mantém características
+positivas dos parentes enquanto possívelmente descobre outros bons
+genes. A ideia geral do algorimo é iterativamente escolher nós dos
+pais aonde o próximo nó é um dos primeiros não visitados e o que
+compõe a menor distância para o nó atual da iteração. Esse
+primeiro nó não visitado é denominado nó legítimo pelo autor.
+
+\begin{minted}{rust}
+// Inicializa offspring como arranjo zerado.
+let mut offspring = [0; NODE_COUNT];
+// Inicializa arranjo de nós visitados.
+let mut visited = [false; NODE_COUNT];
+// Escolhe aleatóriamente o primeiro nó da prole.
+let mut fst = [&p1, &p2][rand::random_range(0..2)][0];
+offspring[0] = fst;
+// Marca o primeiro nó como visitado.
+visited[fst] = true;
+// Para cada nó que não é o primeiro, é escolhido os
+// nós legítimos a e b dos país e o que tiver a menor
+// distância para o nó atual da iteração é incorporado na prole.
+for n in offspring.iter_mut().skip(1) {
+    let a = legitimate(fst, &mut visited, p1);
+    let b = legitimate(fst, &mut visited, p2);
+    *n = if g[fst][a] < g[fst][b] { a } else { b };
+    fst = *n;
+    visited[*n] = true;
+}
+// Sobrescreve o pai que tiver menor fitness que a prole (se houver).
+[p1, p2].iter_mut().enumerate().find_map(|(i, p)| {
+    (fit(&offspring) < fit(p)).then(|| {
+        **p = offspring;
+        i
+    })
+})
+\end{minted}
+
+Quanto aos hiper-parâmetros, simplemesmente realizamos o tuning do
+irace para as instâncias que tinhamos.
