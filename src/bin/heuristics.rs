@@ -99,8 +99,6 @@ fn nearest_neighbour(graph: &Graph, start: usize) -> Solution<NODE_COUNT> {
 /// 7. O vetor `min_dist` é atualizado em tempo O(n), ajustando as distâncias mínimas dos vértices
 ///    ainda não inseridos.
 /// 8. O processo continua até que todos os vértices estejam presentes no ciclo.
-#[allow(dead_code)]
-// TODO: MUDAR PARA CHEAPEST_INSERTION
 fn nearest_insertion(graph: &Graph, start: usize) -> Solution<NODE_COUNT> {
     let n = graph.len();
     let mut in_cycle = vec![false; n];
@@ -178,7 +176,6 @@ fn nearest_insertion(graph: &Graph, start: usize) -> Solution<NODE_COUNT> {
     Solution { route: cycle, cost }
 }
 
-#[allow(dead_code)]
 fn nearest_neighbour_with_swap(graph: &Graph, start: usize) -> Solution<NODE_COUNT> {
     let first_solution = nearest_neighbour(graph, start);
     let best_solution = first_solution.swap(graph, start);
@@ -192,10 +189,10 @@ fn nearest_insertion_with_or_opt(graph: &Graph, start: usize) -> Solution<NODE_C
 }
 
 fn main() {
-    // println!("{} ", nearest_neighbour(&g, 0).cost);
-    // println!("{} ", nearest_neighbour_with_swap(&g, 0).cost);
-    // println!("{} ", nearest_insertion(&g, 0).cost);
-    println!("{} ", nearest_insertion_with_or_opt(&g, 0).cost);
+    print!("- Using nearest neighbour heuristic with swap as local search... ");
+    println!("Cost: {} ", nearest_neighbour_with_swap(&g, 0).cost);
+    print!("- Using nearest insertion heuristic with or-opt as local search... ");
+    println!("Cost: {} ", nearest_insertion_with_or_opt(&g, 0).cost);
 }
 
 // #[cfg(test)]
