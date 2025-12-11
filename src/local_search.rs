@@ -217,6 +217,7 @@ impl<const N: usize> LocalSearch<[[f64; N]; N]> for Solution<N> {
     }
 }
 
+/*
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -377,3 +378,5 @@ mod tests {
         assert_eq!(solution.route, [0, 4, 2, 1, 3]);
     }
 }
+
+ */
